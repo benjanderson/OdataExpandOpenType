@@ -6,6 +6,8 @@ using System.Web.Mvc;
 
 namespace OdataExpandOpenType.Controllers
 {
+  using System.Data.Entity;
+
   public class HomeController : Controller
   {
     public ActionResult Index()
