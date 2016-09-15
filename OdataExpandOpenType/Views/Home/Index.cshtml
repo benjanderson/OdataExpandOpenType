@@ -7,7 +7,7 @@
     <h2>Repro Issue</h2>
     <p><a id="post" class="btn btn-default">Post random Person</a>
     </p>
-    <p><a class="btn btn-default">Get People</a>
+    <p><a id="get" class="btn btn-default">Get People</a>
     </p>
     <p><a class="btn btn-default">Get People Expanded</a>
     </p>
@@ -18,7 +18,18 @@
 {
   <script>
     $(() => {
-      var baseUrl = "@Request.Url.AbsoluteUri";
+    	var baseUrl = "@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))";
+	    $("#get")
+		    .click(() => {
+			    $.ajax({
+					    url: baseUrl + "api/Persons",
+					    dataType: 'json'
+				    })
+				    .done((response) => {
+					    console.log(response.results);
+				    });
+		    });
+
       $("#post")
         .click(() => {
           $.ajax({
@@ -31,7 +42,7 @@
                 name: randomUser.name.first + " " + randomUser.name.last,
                 dateOfBirth: randomUser.dob
               };
-              
+
               return $.post(baseUrl + "api/Persons", user)
                 .done((response) => {
                   console.log(response);

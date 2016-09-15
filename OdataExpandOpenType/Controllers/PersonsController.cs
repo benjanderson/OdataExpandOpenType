@@ -1,9 +1,11 @@
 ﻿namespace OdataExpandOpenType.Controllers
 {
-  using System.Threading.Tasks;
+	using System.Linq;
+	using System.Threading.Tasks;
   using System.Web.Http;
-  using System.Web.Http.OData;
-  using System.Web.OData.Routing;
+	using System.Web.Http.Description;
+	using System.Web.OData;
+	using System.Web.OData.Routing;
 
   public class PersonsController : ODataController
   {
@@ -14,7 +16,17 @@
 
     private readonly PersonContext dbContext;
 
-    [HttpPost]
+	  [HttpGet]
+		[ResponseType(typeof(IQueryable<Person>))]
+		[ODataRoute("Persons")]
+	  [Route("api/Persons")]
+	  public IHttpActionResult Get()
+	  {
+		  return this.Ok(this.dbContext.Persons.AsQueryable());
+	  }
+
+	  [HttpPost]
+		[ResponseType(typeof(Person))]
     [ODataRoute("Persons")]
     [Route("api/Persons")]
     public async Task<IHttpActionResult> Post([FromBody] Person person)
