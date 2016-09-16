@@ -27,8 +27,8 @@
         $(() => {
             var baseUrl = "@($"{Request.Url.Scheme}://{Request.Url.Authority}{Url.Content("~")}")";
 
-            var showResults = function(promise) {
-                promise
+            var showResults = function (promise) {
+                return promise
                     .fail((error) => {
                         $("#response-header").css({ "color": "red" });
                         $("#results").text(JSON.stringify(error, null, 4));
@@ -57,10 +57,10 @@
 
             $("#post")
                 .click(() => {
-                    showResults($.ajax({
-                            url: 'https://randomuser.me/api/',
-                            dataType: 'json'
-                        })
+                    $.ajax({
+                        url: 'https://randomuser.me/api/',
+                        dataType: 'json'
+                    })
                         .done((userResponse) => {
                             var randomUser = userResponse.results[0];
                             var user = {
@@ -86,15 +86,15 @@
                                 ]
                             };
 
-                            return $.ajax(
+                            return showResults($.ajax(
                             {
                                 type: "POST",
                                 processData: false,
                                 url: baseUrl + "api/Persons",
                                 data: JSON.stringify(user),
                                 contentType: 'application/json'
-                            });
-                        }));
+                            }));
+                        });
                 });
         });
     </script>
