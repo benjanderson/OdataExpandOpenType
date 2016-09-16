@@ -20,6 +20,8 @@
       builder.EntitySet<Person>("Persons");
 
       config.MapODataServiceRoute("ODataRoute", "api", builder.GetEdmModel());
+
+	    config.EnsureInitialized();
     }
   }
 }
