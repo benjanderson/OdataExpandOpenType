@@ -50,7 +50,7 @@
             $("#get-expanded")
                 .click(() => {
                     showResults($.ajax({
-                        url: baseUrl + "api/Persons?$expand=Widgets",
+                        url: baseUrl + "api/Persons?$expand=Attributes,Widgets($expand=Attributes)",
                         dataType: 'json'
                     }));
                 });
@@ -66,23 +66,39 @@
                             var user = {
                                 Name: randomUser.name.first + " " + randomUser.name.last,
                                 DateOfBirth: new Date(randomUser.dob),
-                                Phone: randomUser.phone,
+                                Attributes: [
+                                    {
+                                        Name: "Phone",
+                                        Value: randomUser.phone
+                                    }
+                                ],
                                 Widgets: [
                                     {
                                         Name: "w1",
                                         Value: 1,
-                                        CustomProp: "wee"
+                                        Attributes: [
+                                            {
+                                                Name: "CustomProp",
+                                                Value: "wee"
+                                            }
+                                        ]
                                     },
                                     {
                                         Name: "w2",
                                         Value: 2,
-                                        CustomProp: "hoo"
+                                        Attributes: [{
+                                            Name: "CustomProp",
+                                            Value: "hoo"
+                                        }]
                                     },
                                     {
                                         Name: "w3",
                                         Value: 3,
-                                        CustomProp: "bob"
-                                    },
+                                        Attributes: [{
+                                            Name: "CustomProp",
+                                            Value: "bob"
+                                        }]
+                                    }
                                 ]
                             };
 
