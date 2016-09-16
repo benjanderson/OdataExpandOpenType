@@ -1,65 +1,101 @@
 ﻿@{
-  ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home Page";
 }
 
 <div class="row">
-  <div class="col-md-4">
-    <h2>Repro Issue</h2>
-    <p>
-      <a id="post" class="btn btn-default">Post random Person</a>
-    </p>
-    <p>
-      <a id="get" class="btn btn-default">Get People</a>
-    </p>
-    <p>
-      <a class="btn btn-default">Get People Expanded</a>
-    </p>
-  </div>
+    <div class="col-md-4">
+        <h2>Repro Issue</h2>
+        <p>
+            <a id="post" class="btn btn-default">Post random Person</a>
+        </p>
+        <p>
+            <a id="get" class="btn btn-default">Get People</a>
+        </p>
+        <p>
+            <a id="get-expanded" class="btn btn-default">Get People Expanded</a>
+        </p>
+    </div>
+    <div class="col-md-8">
+        <h2 id="response-header">RESPONSE</h2>
+        <pre id="results"></pre>
+    </div>
 </div>
 
 @section scripts
 {
-  <script>
-    $(() => {
-      var baseUrl = "@($"{Request.Url.Scheme}://{Request.Url.Authority}{Url.Content("~")}")";
-      $("#get")
-		    .click(() => {
-		      $.ajax({
-		        url: baseUrl + "api/Persons",
-		        dataType: 'json'
-		      })
-				    .done((response) => {
-				      console.log(response.results);
-				    });
-		    });
+    <script>
+        $(() => {
+            var baseUrl = "@($"{Request.Url.Scheme}://{Request.Url.Authority}{Url.Content("~")}")";
 
-      $("#post")
-        .click(() => {
-          $.ajax({
-            url: 'https://randomuser.me/api/',
-            dataType: 'json'
-          })
-            .done((userResponse) => {
-              var randomUser = userResponse.results[0];
-              var user = {
-                Name: randomUser.name.first + " " + randomUser.name.last,
-                DateOfBirth: new Date(randomUser.dob),
-                Phone: randomUser.phone
-              };
+            var showResults = function(promise) {
+                promise
+                    .fail((error) => {
+                        $("#response-header").css({ "color": "red" });
+                        $("#results").text(JSON.stringify(error, null, 4));
+                    })
+                    .done((response) => {
+                        $("#response-header").css({ "color": "black" });
+                        $("#results").text(JSON.stringify(response, null, 4));
+                    });
+            };
 
-              return $.ajax(
-            {
-              type: "POST",
-              processData: false,
-              url: baseUrl + "api/Persons",
-              data: JSON.stringify(user),
-              contentType: 'application/json'
-            })
-                .done((response) => {
-                  console.log(response);
+            $("#get")
+                .click(() => {
+                    showResults($.ajax({
+                        url: baseUrl + "api/Persons",
+                        dataType: 'json'
+                    }));
                 });
-            });
+
+            $("#get-expanded")
+                .click(() => {
+                    showResults($.ajax({
+                        url: baseUrl + "api/Persons?$expand=Widgets",
+                        dataType: 'json'
+                    }));
+                });
+
+            $("#post")
+                .click(() => {
+                    showResults($.ajax({
+                            url: 'https://randomuser.me/api/',
+                            dataType: 'json'
+                        })
+                        .done((userResponse) => {
+                            var randomUser = userResponse.results[0];
+                            var user = {
+                                Name: randomUser.name.first + " " + randomUser.name.last,
+                                DateOfBirth: new Date(randomUser.dob),
+                                Phone: randomUser.phone,
+                                Widgets: [
+                                    {
+                                        Name: "w1",
+                                        Value: 1,
+                                        CustomProp: "wee"
+                                    },
+                                    {
+                                        Name: "w2",
+                                        Value: 2,
+                                        CustomProp: "hoo"
+                                    },
+                                    {
+                                        Name: "w3",
+                                        Value: 3,
+                                        CustomProp: "bob"
+                                    },
+                                ]
+                            };
+
+                            return $.ajax(
+                            {
+                                type: "POST",
+                                processData: false,
+                                url: baseUrl + "api/Persons",
+                                data: JSON.stringify(user),
+                                contentType: 'application/json'
+                            });
+                        }));
+                });
         });
-    });
-  </script>
+    </script>
 }
