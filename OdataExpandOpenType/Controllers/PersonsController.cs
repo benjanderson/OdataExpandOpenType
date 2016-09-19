@@ -33,6 +33,11 @@
         [Route("api/Persons")]
         public async Task<IHttpActionResult> Post([FromBody] Person person)
         {
+            if (person == null)
+            {
+                return this.BadRequest("Empty request");
+            }
+
             this.dbContext.Persons.Add(person);
             await this.dbContext.SaveChangesAsync();
             return this.Ok(person);

@@ -23,6 +23,10 @@ namespace OdataExpandOpenType.Controllers
 
         public IDbSet<Person> Persons { get; set; }
 
+        public IDbSet<Sub1Person> Sub1Persons { get; set; }
+
+        public IDbSet<Sub2Person> Sub2Persons { get; set; }
+
         public IDbSet<Widget> Widgets { get; set; }
 
         public IDbSet<PersonAttribute> PersonAttributes { get; set; }
@@ -63,12 +67,15 @@ namespace OdataExpandOpenType.Controllers
         {
             this.Attributes = new HashSet<PersonAttribute>();
             this.Widgets = new HashSet<Widget>();
+            this.Type = string.IsNullOrEmpty(this.Type) ? nameof(Person) : this.Type;
         }
 
         [Key]
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public string Type { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 
@@ -79,6 +86,25 @@ namespace OdataExpandOpenType.Controllers
         public virtual ICollection<PersonAttribute> Attributes { get; }
     }
 
+    public class Sub1Person : Person
+    {
+        public Sub1Person()
+        {
+            this.Type = nameof(Sub1Person);
+        }
+
+        public string Foo { get; set; }
+    }
+
+    public class Sub2Person : Person
+    {
+        public Sub2Person()
+        {
+            this.Type = nameof(Sub2Person);
+        }
+
+        public string Bar { get; set; }
+    }
 
     public class Widget 
     {
