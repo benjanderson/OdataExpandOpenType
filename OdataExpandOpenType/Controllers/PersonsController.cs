@@ -24,15 +24,16 @@
         [Route("api/Persons")]
         public IHttpActionResult Get()
         {
-            return this.Ok(this.dbContext.Persons);
+            return this.Ok(this.dbContext.Persons.Include(a => a.Attributes));
         }
 
         [HttpPost]
         [ResponseType(typeof(Person))]
         [ODataRoute("Persons")]
         [Route("api/Persons")]
-        public async Task<IHttpActionResult> Post([FromBody] Person person)
+        public async Task<IHttpActionResult> Post([FromBody] OpenPerson openPerson)
         {
+            var person = openPerson.ToPerson();
             this.dbContext.Persons.Add(person);
             await this.dbContext.SaveChangesAsync();
             return this.Ok(person);

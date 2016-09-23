@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OdataExpandOpenType.Controllers
+﻿namespace OdataExpandOpenType.Controllers
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -79,6 +75,36 @@ namespace OdataExpandOpenType.Controllers
         public virtual ICollection<PersonAttribute> Attributes { get; }
     }
 
+
+    [NotMapped]
+    public class OpenPerson : Person
+    {
+        [NotMapped]
+        public Dictionary<string, object> Properties { get; set; }
+
+        public Person ToPerson()
+        {
+            var person = new Person() { Name = this.Name, DateOfBirth = this.DateOfBirth };
+            foreach (var widget in this.Widgets)
+            {
+                var newWidget = new Widget { Name = widget.Name, Value = widget.Value };
+                foreach (var widgetAttribute in widget.Attributes)
+                {
+                    newWidget.Attributes.Add(
+                        new WidgetAttribute { Name = widgetAttribute.Name, Value = widgetAttribute.Value });
+                }
+
+                person.Widgets.Add(newWidget);
+
+            }
+
+            foreach (var property in this.Properties)
+            {
+                person.Attributes.Add(new PersonAttribute { Name = property.Key, Value = property.Value?.ToString() });
+            }
+            return person;
+        }
+    }
 
     public class Widget 
     {
