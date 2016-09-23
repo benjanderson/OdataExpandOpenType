@@ -6,6 +6,7 @@
     using System.Web.Http;
     using System.Web.Http.Description;
     using System.Web.OData;
+    using System.Web.OData.Query;
     using System.Web.OData.Routing;
 
     [EnableQuery]
@@ -22,9 +23,11 @@
         [ResponseType(typeof(IQueryable<Person>))]
         [ODataRoute("Persons")]
         [Route("api/Persons")]
-        public IHttpActionResult Get()
+        public IHttpActionResult Get(ODataQueryOptions<Person> queryOptions)
         {
-            return this.Ok(this.dbContext.Persons);
+            //if (queryOptions)
+
+            return this.Ok(this.dbContext.Persons.Include(person => person.Attributes));
         }
 
         [HttpPost]

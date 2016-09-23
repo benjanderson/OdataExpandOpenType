@@ -13,7 +13,7 @@
         </p>
         <p>
             <a id="get-filtered" class="btn btn-danger">Get People Filtered</a>
-            <input id="filter" type="text" class="form-control" value="1" />
+            <input id="filter" type="text" class="form-control" value="a" />
         </p>
         <p>
             <a id="get-expanded" class="btn btn-primary">Get People Expanded</a>
@@ -68,7 +68,7 @@
             $("#get-expanded")
                 .click(() => {
                     showResults($.ajax({
-                        url: baseUrl + "api/Persons?$expand=Attributes,Widgets($expand=Attributes)",
+                        url: baseUrl + "api/Persons?$expand=Widgets",
                         dataType: 'json'
                     }));
                 });

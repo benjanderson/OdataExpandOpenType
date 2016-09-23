@@ -1,27 +1,34 @@
 ﻿namespace OdataExpandOpenType
 {
-  using System.Web.Http;
-  using System.Web.OData.Builder;
-  using System.Web.OData.Extensions;
+    using System.Web.Http;
+    using System.Web.OData.Builder;
+    using System.Web.OData.Extensions;
+    using System.Web.OData.Formatter;
+    using System.Web.OData.Formatter.Deserialization;
 
-  using OdataExpandOpenType.Controllers;
+    using OdataExpandOpenType.App_Start;
+    using OdataExpandOpenType.Controllers;
 
-  internal static class WebApiConfig
-  {
-    public static void Register(HttpConfiguration config)
+    internal static class WebApiConfig
     {
-      // Web API configuration and services
-      // OData routes
-      ODataModelBuilder builder = new ODataConventionModelBuilder
-      {
-        Namespace = "OdataExpandOpenType",
-        ContainerName = "OdataExpandOpenTypeContainer"
-      };
-      builder.EntitySet<Person>("Persons");
+        public static void Register(HttpConfiguration config)
+        {
+            // Web API configuration and services
+            // OData routes
+            ODataModelBuilder builder = new ODataConventionModelBuilder
+            {
+                Namespace = "OdataExpandOpenType",
+                ContainerName = "OdataExpandOpenTypeContainer"
+            };
+            builder.EntitySet<Person>("Persons");
 
-      config.MapODataServiceRoute("ODataRoute", "api", builder.GetEdmModel());
+            config.MapODataServiceRoute("ODataRoute", "api", builder.GetEdmModel());
 
-	    config.EnsureInitialized();
+
+            var odataFormatters = ODataMediaTypeFormatters.Create(new CustomODataSerializerProvider(), new DefaultODataDeserializerProvider());
+            config.Formatters.InsertRange(0, odataFormatters);
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            config.EnsureInitialized();
+        }
     }
-  }
 }
