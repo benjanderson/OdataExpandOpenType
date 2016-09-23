@@ -49,8 +49,8 @@
         public override ODataEntry CreateEntry(SelectExpandNode selectExpandNode, EntityInstanceContext entityInstanceContext)
         {            
             ODataEntry entry = base.CreateEntry(selectExpandNode, entityInstanceContext);
-            Person document = entityInstanceContext.EntityInstance as Person;
-            if (entry != null && document != null)
+            Person person = entityInstanceContext.EntityInstance as Person;
+            if (entry != null && person != null)
             {
                 var navigationProperty =
                     selectExpandNode.SelectedNavigationProperties.FirstOrDefault(nav => nav.Name == "Attributes");
@@ -64,7 +64,7 @@
                     
                 }
 
-                foreach (var personAttribute in document.Attributes)
+                foreach (var personAttribute in person.Attributes)
                 {
                     ((List<ODataProperty>)entry.Properties).Add(
                         new ODataProperty { Name = personAttribute.Name, Value = personAttribute.Value });
