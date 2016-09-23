@@ -6,13 +6,17 @@
     <div class="col-md-4">
         <h2>Repro Issue</h2>
         <p>
-            <a id="post" class="btn btn-default">Post random Person</a>
+            <a id="post" class="btn btn-success">Post random Person</a>
         </p>
         <p>
-            <a id="get" class="btn btn-default">Get People</a>
+            <a id="get" class="btn btn-warning">Get People</a>
         </p>
         <p>
-            <a id="get-expanded" class="btn btn-default">Get People Expanded</a>
+            <a id="get-filtered" class="btn btn-danger">Get People Filtered</a>
+            <input id="filter" type="text" class="form-control" value="1" />
+        </p>
+        <p>
+            <a id="get-expanded" class="btn btn-primary">Get People Expanded</a>
         </p>
     </div>
     <div class="col-md-8">
@@ -39,12 +43,26 @@
                     });
             };
 
+            var get = function (nameFilter) {
+                var url = baseUrl + "api/Persons";
+                if (nameFilter) {
+                    url = url + "?$filter=contains(Name,'" + nameFilter + "')";
+                }
+                showResults($.ajax({
+                    url: url,
+                    dataType: 'json'
+                }));
+            };
+
             $("#get")
                 .click(() => {
-                    showResults($.ajax({
-                        url: baseUrl + "api/Persons",
-                        dataType: 'json'
-                    }));
+                    get();
+                });
+
+            $("#get-filtered")
+                .click(() => {
+                    var input = $("#filter").val();
+                    get(input);
                 });
 
             $("#get-expanded")
@@ -66,12 +84,7 @@
                             var user = {
                                 Name: randomUser.name.first + " " + randomUser.name.last,
                                 DateOfBirth: new Date(randomUser.dob),
-                                Attributes: [
-                                    {
-                                        Name: "Phone",
-                                        Value: randomUser.phone
-                                    }
-                                ],
+                                Phone: randomUser.phone,// dynamic property
                                 Widgets: [
                                     {
                                         Name: "w1",
