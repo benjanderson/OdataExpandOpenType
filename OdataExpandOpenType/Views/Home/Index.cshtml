@@ -46,7 +46,7 @@
             var get = function (nameFilter) {
                 var url = baseUrl + "api/Persons";
                 if (nameFilter) {
-                    url = url + "?$filter=contains(Name,'" + nameFilter + "')";
+                    url = url + "?$filter=contains(Phone,'" + nameFilter + "')";
                 }
                 showResults($.ajax({
                     url: url,
@@ -68,7 +68,7 @@
             $("#get-expanded")
                 .click(() => {
                     showResults($.ajax({
-                        url: baseUrl + "api/Persons?$expand=Attributes,Widgets($expand=Attributes)",
+                        url: baseUrl + "api/Persons?$expand=Widgets&$top=2",
                         dataType: 'json'
                     }));
                 });
