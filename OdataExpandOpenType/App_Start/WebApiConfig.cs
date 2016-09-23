@@ -1,27 +1,41 @@
 ﻿namespace OdataExpandOpenType
 {
-  using System.Web.Http;
-  using System.Web.OData.Builder;
-  using System.Web.OData.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web.Http;
+    using System.Web.OData.Builder;
+    using System.Web.OData.Extensions;
+    using System.Web.OData.Query;
 
-  using OdataExpandOpenType.Controllers;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.OData.Edm;
+    using Microsoft.Restier.Core.Model;
+    using Microsoft.Restier.Core.Submit;
+    using Microsoft.Restier.Providers.EntityFramework;
+    using Microsoft.Restier.Publishers.OData.Batch;
+    using Microsoft.Restier.Publishers.OData;
+    using Microsoft.Restier.Publishers.OData.Model;
 
-  internal static class WebApiConfig
-  {
-    public static void Register(HttpConfiguration config)
+    using OdataExpandOpenType.Controllers;
+
+    internal static class WebApiConfig
     {
-      // Web API configuration and services
-      // OData routes
-      ODataModelBuilder builder = new ODataConventionModelBuilder
-      {
-        Namespace = "OdataExpandOpenType",
-        ContainerName = "OdataExpandOpenTypeContainer"
-      };
-      builder.EntitySet<Person>("Persons");
+        public static void Register(HttpConfiguration config)
+        {
+            RegisterApi(config, GlobalConfiguration.DefaultServer);
+            var odataFormatters = ODataMediaTypeFormatters.Create(new CustomODataSerializerProvider(), new DefaultODataDeserializerProvider());
+            config.Formatters.InsertRange(0, odataFormatters);
+        }
 
-      config.MapODataServiceRoute("ODataRoute", "api", builder.GetEdmModel());
-
-	    config.EnsureInitialized();
+        public static async void RegisterApi(
+            HttpConfiguration config, HttpServer server)
+        {
+            config.Filter().Expand().Select().OrderBy().MaxTop(null).Count();
+            await config.MapRestierRoute<PersonApi>("PersonsApi", "api", new RestierBatchHandler(server));
+        }
     }
-  }
 }
