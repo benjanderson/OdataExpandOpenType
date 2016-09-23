@@ -12,6 +12,10 @@
             <a id="get" class="btn btn-default">Get People</a>
         </p>
         <p>
+            <a id="get-filtered" class="btn btn-default">Get People Filtered</a>
+            <input id="filter" type="text" class="form-control" value="a" />
+        </p>
+        <p>
             <a id="get-expanded" class="btn btn-default">Get People Expanded</a>
         </p>
     </div>
@@ -39,12 +43,26 @@
                     });
             };
 
+            var get = function (nameFilter) {
+                var url = baseUrl + "api/Persons";
+                if (nameFilter) {
+                    url = url + "?$filter=contains(Name,'" + nameFilter + "')";
+                }
+                showResults($.ajax({
+                    url: url,
+                    dataType: 'json'
+                }));
+            };
+
             $("#get")
                 .click(() => {
-                    showResults($.ajax({
-                        url: baseUrl + "api/Persons",
-                        dataType: 'json'
-                    }));
+                    get();
+                });
+
+            $("#get-filtered")
+                .click(() => {
+                    var input = $("#filter").val();
+                    get(input);
                 });
 
             $("#get-expanded")
@@ -66,7 +84,7 @@
                             var user = {
                                 Name: randomUser.name.first + " " + randomUser.name.last,
                                 DateOfBirth: new Date(randomUser.dob),
-                                Phone: randomUser.phone,
+                                Phone: randomUser.phone,// dynamic property
                                 Widgets: [
                                     {
                                         Name: "w1",

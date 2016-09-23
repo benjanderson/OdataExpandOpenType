@@ -8,17 +8,34 @@ using System.Web.Routing;
 
 namespace OdataExpandOpenType
 {
-  using System.Web.Http;
+    using System.Web.Http;
 
-  public class MvcApplication : System.Web.HttpApplication
-  {
-    protected void Application_Start()
+    using StackExchange.Profiling;
+    using StackExchange.Profiling.EntityFramework6;
+
+    public class MvcApplication : System.Web.HttpApplication
     {
-      AreaRegistration.RegisterAllAreas();
-      FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-			GlobalConfiguration.Configure(WebApiConfig.Register);
-			RouteConfig.RegisterRoutes(RouteTable.Routes);
-      BundleConfig.RegisterBundles(BundleTable.Bundles);
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            MiniProfilerEF6.Initialize();
+        }
+
+        protected void Application_BeginRequest()
+        {
+            if (Request.IsLocal)
+            {
+                MiniProfiler.Start();
+            }
+        }
+
+        protected void Application_EndRequest()
+        {
+            MiniProfiler.Stop();
+        }
     }
-  }
 }
