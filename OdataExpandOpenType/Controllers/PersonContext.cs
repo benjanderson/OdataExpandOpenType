@@ -75,7 +75,7 @@ namespace OdataExpandOpenType.Controllers
         [Contained]
         public virtual ICollection<Widget> Widgets { get; set; }
 
-        [Contained]
+        [AutoExpand]
         public virtual ICollection<PersonAttribute> Attributes { get; }
     }
 
@@ -94,7 +94,7 @@ namespace OdataExpandOpenType.Controllers
 
         public double Value { get; set; }
 
-        [Contained]
+        [AutoExpand]
         public virtual ICollection<WidgetAttribute> Attributes { get; }        
     }    
 }

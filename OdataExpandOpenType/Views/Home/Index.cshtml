@@ -68,7 +68,7 @@
             $("#get-expanded")
                 .click(() => {
                     showResults($.ajax({
-                        url: baseUrl + "api/Persons?$expand=Attributes,Widgets($expand=Attributes)",
+                        url: baseUrl + "api/Persons?$expand=Widgets",
                         dataType: 'json'
                     }));
                 });
@@ -84,7 +84,12 @@
                             var user = {
                                 Name: randomUser.name.first + " " + randomUser.name.last,
                                 DateOfBirth: new Date(randomUser.dob),
-                                Phone: randomUser.phone,// dynamic property
+                                Attributes: [
+                                            {
+                                                Name: "Phone",
+                                                Value: randomUser.phone
+                                            }
+                                ],
                                 Widgets: [
                                     {
                                         Name: "w1",
