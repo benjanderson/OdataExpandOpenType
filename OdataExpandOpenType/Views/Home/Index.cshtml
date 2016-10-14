@@ -46,7 +46,7 @@
             var get = function (nameFilter) {
                 var url = baseUrl + "api/Persons";
                 if (nameFilter) {
-                    url = url + "?$filter=contains(Name,'" + nameFilter + "')";
+                    url = url + "?$filter=Attributes/any(a:a/Name eq 'Phone' and a/Value eq '05-2057-6215')";
                 }
                 showResults($.ajax({
                     url: url,
@@ -81,7 +81,7 @@
                     })
                         .done((userResponse) => {
                             var randomUser = userResponse.results[0];
-                            var user = {
+                            var person = {
                                 Name: randomUser.name.first + " " + randomUser.name.last,
                                 DateOfBirth: new Date(randomUser.dob),
                                 Attributes: [
@@ -125,7 +125,7 @@
                                 type: "POST",
                                 processData: false,
                                 url: baseUrl + "api/Persons",
-                                data: JSON.stringify(user),
+                                data: JSON.stringify(person),
                                 contentType: 'application/json'
                             }));
                         });
