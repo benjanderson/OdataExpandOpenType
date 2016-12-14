@@ -184,7 +184,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseEntity.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MongoDBRepository.cs" />
+    <Compile Include="Controllers\ParentEntity.cs" />
     <Compile Include="Controllers\PersonContext.cs" />
     <Compile Include="Controllers\PersonsController.cs" />
     <Compile Include="Global.asax.cs">
