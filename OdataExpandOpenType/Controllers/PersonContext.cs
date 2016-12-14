@@ -18,7 +18,7 @@
         public PersonContext(string connectionString)
         {
             this.Persons = new MongoDBRepository<Person>(connectionString);
-            this.Persons = new MongoDBRepository<Person>(connectionString);
+            this.Widgets = new MongoDBRepository<Widget>(connectionString);
         }
 
         public MongoDBRepository<Person> Persons { get; set; }
@@ -28,9 +28,6 @@
 
     public class Attribute
     {
-        [Key]
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string Value { get; set; }
@@ -38,8 +35,6 @@
 
     public class PersonAttribute : Attribute
     {
-        public virtual Person Person { get; set; }
-
         [ForeignKey("Person")]
         public int PersonId { get; set; }
     }
@@ -62,10 +57,7 @@
             this.Attributes = new List<PersonAttribute>();
             this.Widgets = new HashSet<Widget>();
         }
-
-        [Key]
-        public int Id { get; set; }
-
+        
         public string Name { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
@@ -73,6 +65,7 @@
         [Contained]
         public virtual ICollection<Widget> Widgets { get; set; }
 
+        [Contained]
         public ICollection<PersonAttribute> Attributes { get; }
 
         public IDictionary<string, object> Properties
@@ -109,9 +102,6 @@
             this.properties = new Dictionary<string, object>();
             this.Attributes = new Collection<WidgetAttribute>();
         }
-
-        [Key]
-        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -242,17 +232,8 @@
     }
 
     [BsonIgnoreExtraElements]
-    public abstract partial class BaseEntity : ParentEntity
+    public abstract class BaseEntity : ParentEntity
     {
-        public BaseEntity()
-        {
-            GenericAttributes = new List<GenericAttribute>();
-        }
-
-        public IDictionary<string, object> Properties { get; }
-
-        public IList<GenericAttribute> GenericAttributes { get; set; }
-
         public override bool Equals(object obj)
         {
             return Equals(obj as BaseEntity);
@@ -307,27 +288,7 @@
         }
     }
 
-    [BsonIgnoreExtraElements]
-    public partial class GenericAttribute
-    {
-        /// <summary>
-        /// Gets or sets the key
-        /// </summary>
-        public string Key { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value
-        /// </summary>
-        public string Value { get; set; }
-
-        /// <summary>
-        /// Gets or sets the store identifier
-        /// </summary>
-        public string StoreId { get; set; }
-
-    }
-
-    public abstract class ParentEntity
+   public abstract class ParentEntity
     {
         public ParentEntity()
         {
