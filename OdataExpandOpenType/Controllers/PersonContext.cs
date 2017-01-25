@@ -56,6 +56,7 @@
         public DateTime? DateOfBirth { get; set; }
 
         [Contained]
+        [AutoExpand]
         public virtual ICollection<Widget> Widgets { get; set; }
 
         [NotMapped]

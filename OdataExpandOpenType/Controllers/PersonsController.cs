@@ -1,5 +1,6 @@
 ﻿namespace OdataExpandOpenType.Controllers
 {
+    using System;
     using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
@@ -24,7 +25,8 @@
         [Route("api/Persons")]
         public IHttpActionResult Get()
         {
-            return this.Ok(this.dbContext.Persons.Table);
+            var people = this.dbContext.Persons.Table.ToList();
+            return this.Ok(people.AsQueryable());
         }
 
         [HttpPost]
@@ -34,6 +36,35 @@
         public IHttpActionResult Post([FromBody] Person person)
         {
             this.dbContext.Persons.Insert(person);
+            return this.Ok(person);
+        }
+
+        [HttpPut]
+        [ResponseType(typeof(Person))]
+        [ODataRoute("Persons")]
+        [Route("api/Persons")]
+        public IHttpActionResult Put([FromBody] Person person)
+        {
+            this.dbContext.Persons.Update(person);
+            return this.Ok(person);
+        }
+
+
+        [HttpPatch]
+        [ResponseType(typeof(Person))]
+        [ODataRoute("Persons")]
+        [Route("api/Persons")]
+        public IHttpActionResult Patch([FromBody] Delta<Person> person)
+        {
+            object personId;
+            if (!person.TryGetPropertyValue("Id", out personId))
+            {
+                throw new InvalidOperationException("no id");
+            }
+
+            var databasePerson = this.dbContext.Persons.GetById((string)personId);
+            person.Patch(databasePerson);
+            this.dbContext.Persons.Update(databasePerson);
             return this.Ok(person);
         }
     }

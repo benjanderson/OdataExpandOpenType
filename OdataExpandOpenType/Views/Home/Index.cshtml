@@ -9,6 +9,15 @@
             <a id="post" class="btn btn-success">Post random Person</a>
         </p>
         <p>
+            <a id="put" class="btn btn-default">Put</a>
+            <textarea id="put-content" type="text" class="form-control" rows="10" ></textarea>
+        </p>
+        <p>
+            <a id="patch" class="btn btn-default">Patch</a>
+            <textarea id="patch-content" type="text" class="form-control" rows="10"></textarea>
+        </p>
+
+        <p>
             <a id="get" class="btn btn-warning">Get People</a>
         </p>
         <p>
@@ -71,6 +80,30 @@
                         url: baseUrl + "api/Persons?$expand=Attributes,Widgets($expand=Attributes)",
                         dataType: 'json'
                     }));
+                });
+
+            $("#put")
+                .click(() => {
+                    return showResults($.ajax(
+                                                {
+                                                    type: "PUT",
+                                                    processData: false,
+                                                    url: baseUrl + "api/Persons",
+                                                    data: $("#put-content").val(),
+                                                    contentType: 'application/json'
+                                                }));
+                });
+
+            $("#patch")
+                .click(() => {
+                    return showResults($.ajax(
+                                                {
+                                                    type: "PATCH",
+                                                    processData: false,
+                                                    url: baseUrl + "api/Persons",
+                                                    data: $("#patch-content").val(),
+                                                    contentType: 'application/json'
+                                                }));
                 });
 
             $("#post")
